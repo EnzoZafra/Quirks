@@ -39,29 +39,31 @@ public class EventListActivityTest {
     public void initialize() {
         // Specify a valid comment
         comment = "testing comment";
-        username = "testing123";
+        username = "intest3";
         loginActivity = mActivityRule.getActivity();
     }
 
+    //Test the button to view/Edit Event to change activity
     @Test
     public void viewButton() {
         // Type username and go to quirk list then event list of first quirk
         Intents.init();
+
+        //Navigate to EventListActivity
         onView(withId(R.id.loginUser))
                 .perform(typeText(username), closeSoftKeyboard());
         onView(withId(R.id.loginBtn))
                 .perform(click());
         onView(withId(R.id.action_quirklist))
                 .perform(click());
-
+        //Test to ensure that the ViewButton is functional and leads to EditEventActivity
         onData(anything()).inAdapterView(withId(R.id.quirk_listview)).atPosition(0).
                 onChildView(withId(R.id.quirk_button)).perform(click());
-
-        //click on view/edit/delete button
         onData(anything()).inAdapterView(withId(R.id.el_eventslistview)).atPosition(0).
                 onChildView(withId(R.id.el_eventview)).perform(click());
 
         intended(hasComponent(EditEventActivity.class.getName()));
+
 
         Intents.release();
     }

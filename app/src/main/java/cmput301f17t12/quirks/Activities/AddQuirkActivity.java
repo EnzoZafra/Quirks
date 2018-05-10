@@ -19,6 +19,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -81,7 +82,7 @@ public class AddQuirkActivity extends AppCompatActivity {
             Log.i("Error", "Did not find correct jestID");
         }
 
-        currentlylogged = HelperFunctions.getUserObject(jestID);
+        currentlylogged = HelperFunctions.getSingleUserGeneral(getApplicationContext());
 
         SelectDate.setOnClickListener(new View.OnClickListener() {
 
@@ -91,11 +92,11 @@ public class AddQuirkActivity extends AppCompatActivity {
                 int year = cal.get(Calendar.YEAR);
                 int month = cal.get(Calendar.MONTH);
                 int day = cal.get(Calendar.DAY_OF_MONTH);
-               DatePickerDialog dialog = new DatePickerDialog(AddQuirkActivity.this, android.R.style.Theme_Holo_Dialog_MinWidth,SelectDateListener,year,month,day);
+                DatePickerDialog dialog = new DatePickerDialog(AddQuirkActivity.this, android.R.style.Theme_Holo_Dialog_MinWidth,SelectDateListener,year,month,day);
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 dialog.show();
 
-           }
+            }
 
         });
 
@@ -106,7 +107,11 @@ public class AddQuirkActivity extends AppCompatActivity {
                 date2 = month + "/" + day + "/" + year;
                 SelectDate.setText(date2);
                 Log.d(TAG, "onDateSet: the date is now   " + date2);
-                 startDate = new Date(year,month,day);
+                Log.d(TAG, "onDateSet: the year is now " + year);
+                Log.d(TAG, "onDateSet: the month is now " + month);
+                Log.d(TAG, "onDateSet: the day is now " + day);
+                startDate = new Date(year-1900,month-1,day);
+                Log.d(TAG, "onDateSet: the startdate is now " + startDate);
 
             }
         };
@@ -124,7 +129,8 @@ public class AddQuirkActivity extends AppCompatActivity {
 
 
         if(type.equals("")||(title.equals(""))||(goal.equals(""))||reason.equals("")){
-          // emptyFieldsDialog();
+            Toast.makeText(AddQuirkActivity.this,"All blanks must be filled", Toast.LENGTH_SHORT).show();
+            //emptyFieldsDialog();
         }
         /*
         else if (title.length() > 20 || reason.length() > 30){
@@ -139,6 +145,7 @@ public class AddQuirkActivity extends AppCompatActivity {
             int Quirk_goal = Integer.parseInt(goal);
 
             //The user in here should be the one query from db
+            Log.d(TAG, "saveButtonClicked: the startdate is now " + startDate);
             Quirk QuirkCreated = new Quirk(title, type, startDate, QuirkOccurence, Quirk_goal, currentlylogged.getUsername(), reason);
             Log.d(TAG, "saveButtonClicked: The dateinput is now  " + startDate);
             Log.d(TAG, "saveButtonClicked: The QuirkCreated is the title is  " + QuirkCreated.getTitle() );
@@ -148,8 +155,10 @@ public class AddQuirkActivity extends AppCompatActivity {
             Log.d(TAG, "saveButtonClicked: The QuirkCreated is the Goal is  " + QuirkCreated.getGoalValue());
 
             currentlylogged.addQuirk(QuirkCreated);
-            ElasticSearchUserController.UpdateUserTask updateUserTask = new ElasticSearchUserController.UpdateUserTask();
-            updateUserTask.execute(currentlylogged);
+//            ElasticSearchUserController.UpdateUserTask updateUserTask = new ElasticSearchUserController.UpdateUserTask();
+//            updateUserTask.execute(currentlylogged);
+            HelperFunctions.saveCurrentUser(getApplicationContext(), currentlylogged);
+            HelperFunctions.updateSingleUser(getApplicationContext(), currentlylogged);
 
             finish();
         }
@@ -184,7 +193,7 @@ public class AddQuirkActivity extends AppCompatActivity {
         if(radButSun.isChecked()){
             Day.add(cmput301f17t12.quirks.Enumerations.Day.SUNDAY);
         }
-     return Day;
+        return Day;
     }
 
 
@@ -194,7 +203,6 @@ public class AddQuirkActivity extends AppCompatActivity {
                 .setNegativeButton("Return", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
-                        ;
                     }
                 })
                 .setTitle("Missing Fields");

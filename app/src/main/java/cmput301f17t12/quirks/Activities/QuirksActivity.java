@@ -32,7 +32,7 @@ public class QuirksActivity extends BaseActivity {
     private QuirkList quirkList = new QuirkList();
     private Date dateFilter;
     private QuirkListItemAdapter adapter;
-    private String jestID; //TODO: Change this with shared preferences
+    private String jestID;
     private Spinner spinner;
     private Button applyButton;
     private HashMap filterHashMap;
@@ -52,7 +52,8 @@ public class QuirksActivity extends BaseActivity {
         }
 
         applyButton = (Button) findViewById(R.id.applyFilterButton);
-        final User currentlylogged = HelperFunctions.getUserObject(jestID);
+//        final User currentlylogged = HelperFunctions.getUserObject(jestID);
+        final User currentlylogged = HelperFunctions.getSingleUserGeneral(getApplicationContext());
         quirkList = currentlylogged.getQuirks();
 
         // Filter Hash Map: Filter position: Old Position
@@ -160,7 +161,8 @@ public class QuirksActivity extends BaseActivity {
      * @param jestID
      */
     public void updateQuirkList(String jestID){
-        User currentlylogged = HelperFunctions.getUserObject(jestID);
+//        User currentlylogged = HelperFunctions.getUserObject(jestID);
+        User currentlylogged = HelperFunctions.getSingleUserGeneral(getApplicationContext());
         QuirkList tempList = currentlylogged.getQuirks();
         quirkList.clearAndAddQuirks(tempList);
     }

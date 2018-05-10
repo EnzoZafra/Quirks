@@ -2,7 +2,7 @@ package cmput301f17t12.quirks;
 
 import org.junit.Test;
 
-import cmput301f17t12.quirks.Enumerations.Rarity;
+import cmput301f17t12.quirks.Enumerations.DropType;
 import cmput301f17t12.quirks.Models.Drop;
 
 import static org.junit.Assert.*;
@@ -10,33 +10,21 @@ import static org.junit.Assert.*;
 public class DropsTest {
 
     @Test
-    public void testSetRarity() {
-        Drop drop = new Drop(Rarity.COMMON, "drop_name");
-        drop.setRarity(Rarity.RARE);
-        assertEquals(drop.getRarity(), Rarity.RARE);
+    public void getDropTypeTest(){
+        Drop drop = new Drop(DropType.larrybird);
+        DropType dropType = drop.getDropType();
+        assertEquals(dropType, DropType.larrybird);
     }
 
     @Test
-    public void testGetRarity(){
-        Drop drop = new Drop(Rarity.COMMON, "drop_name");
-        Rarity rarity = drop.getRarity();
-        assertEquals(rarity, Rarity.COMMON);
-    }
+    public void setSelectedTest(){
+        Drop drop = new Drop(DropType.larrybird);
+        assertFalse(drop.isSelected());
 
-    @Test
-    public void testSetName() {
-        Drop drop = new Drop(Rarity.COMMON, "drop_name");
-        drop.setName("item");
-        assertEquals(drop.getName(),"item");
-    }
+        drop.setSelected(true);
+        assertTrue(drop.isSelected());
 
-    @Test
-    public void testGetName(){
-        Drop drop = new Drop(Rarity.COMMON, "drop_name");
-        String dropName = drop.getName();
-        assertEquals(dropName,"drop_name");
     }
-
 
 }
 

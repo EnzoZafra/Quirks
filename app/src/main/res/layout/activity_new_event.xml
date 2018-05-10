@@ -61,46 +61,6 @@
         android:layout_below="@id/comment_edittext"
         android:textSize="17sp" />
 
-    <LinearLayout
-        android:id="@+id/savecancel"
-        android:layout_above="@id/bottom_navigation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp">
-
-        <Button
-            android:id="@+id/save_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_weight="1"
-            android:onClick="saveCommand"
-            android:text="@string/save" />
-
-        <Button
-            android:id="@+id/cancel_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_weight="1"
-            android:onClick="cancelCommand"
-            android:text="@string/cancel" />
-    </LinearLayout>
-
-    <TextView
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="10dp"
-        android:id="@+id/errormsg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/errormsg_newevent"
-        android:visibility="invisible"
-        android:layout_above="@id/savecancel"
-        android:textSize="17sp"
-        android:textColor="@color/colorAccent"/>
-
     <RelativeLayout
         android:id="@+id/photobox"
         android:layout_width="match_parent"
@@ -138,8 +98,70 @@
             android:minHeight="140dp"
             android:background="@color/backgroundlight" />
 
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_margin="10dp"
+        android:layout_below="@+id/photobox"
+        android:layout_above="@+id/errormsg"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="33dp">
+
+        <fragment
+            android:id="@+id/event_map"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            class="com.google.android.gms.maps.SupportMapFragment" />
+
+        <!-- A small label at the top of the screen. -->
+        <TextView
+            android:id="@+id/event_tap_text"
+            android:text="Tap on the map"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
     </RelativeLayout>
+
+    <TextView
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        android:id="@+id/errormsg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/errormsg_newevent"
+        android:visibility="invisible"
+        android:layout_above="@id/savecancel"
+        android:textSize="17sp"
+        android:textColor="@color/colorAccent"/>
+
+    <LinearLayout
+        android:id="@+id/savecancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/bottom_navigation"
+        android:layout_alignParentStart="true">
+
+        <Button
+            android:id="@+id/save_button"
+            android:layout_width="170dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
+            android:onClick="saveCommand"
+            android:text="@string/save" />
+
+        <Button
+            android:id="@+id/cancel_button"
+            android:layout_width="170dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
+            android:onClick="cancelCommand"
+            android:text="@string/cancel" />
+    </LinearLayout>
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/bottom_navigation"

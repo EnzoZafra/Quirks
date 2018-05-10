@@ -18,19 +18,15 @@ public class QuirksListTest {
 
     // Test to getList from QuirkList
     @Test
-    public void testGetList() {
-        Quirk quirk = new Quirk (new EventList(), "title", "type", "reason",
-                new Date(), new ArrayList<Day>(), 1f, 2f);
+    public void testAddQuirk() {
         EventList events = new EventList();
-        Event event = new Event(quirk, "comment", null, new Date(), new Geolocation(1,1));
-        events.addEvent(event);
 
-        Quirk myQuirk = new Quirk(events, "title", "type", "reason", new Date(), new ArrayList<Day>(), 0f, 123f);
-
+        Quirk quirk = new Quirk(events, "title", "type",
+                "reason", new Date(), new ArrayList<Day>(), 2, 10, "unittester");
 
         QuirkList quirks1 = new QuirkList();
 
-        quirks1.addQuirk(myQuirk);
+        quirks1.addQuirk(quirk);
 
         ArrayList<Quirk> quirks2 = new ArrayList<Quirk>();
         quirks2.add(quirk);
@@ -38,75 +34,89 @@ public class QuirksListTest {
         assertEquals(quirks1.getList(), quirks2);
     }
 
-    // Test adding Quirk to QuirkList
-    @Test
-    public void testAddQuirk() {
-        Quirk quirk = new Quirk (new EventList(), "title", "type", "reason",
-                new Date(), new ArrayList<Day>(), 1f, 2f);
-        EventList events = new EventList();
-        Event event = new Event(quirk, "comment", null, new Date(), new Geolocation(1,1));
-        events.addEvent(event);
-
-        Quirk myQuirk = new Quirk(events, "title", "type", "reason", new Date(), new ArrayList<Day>(), 0f, 123f);
-
-
-        QuirkList quirks = new QuirkList();
-
-        assertFalse(quirks.hasQuirk(myQuirk));
-        quirks.addQuirk(myQuirk);
-        assertTrue(quirks.hasQuirk(myQuirk));
-
-    }
-
     // Test if Quirk exists in QuirkList
     @Test
     public void testHasQuirk() {
-        Quirk quirk = new Quirk (new EventList(), "title", "type", "reason",
-                new Date(), new ArrayList<Day>(), 1f, 2f);
         EventList events = new EventList();
-        Event event = new Event(quirk, "comment", null, new Date(), new Geolocation(1,1));
-        events.addEvent(event);
 
-        Quirk myQuirk = new Quirk(events, "title", "type", "reason", new Date(), new ArrayList<Day>(), 0f, 123f);
-        QuirkList quirks = new QuirkList();
+        Quirk quirk = new Quirk(events, "title", "type",
+                "reason", new Date(), new ArrayList<Day>(), 2, 10, "unittester");
+        Quirk quirk1 = new Quirk(events, "notin", "type",
+                "test", new Date(), new ArrayList<Day>(), 2, 10, "unittester");
 
-        assertEquals(quirks.hasQuirk(myQuirk), quirks.getList().contains(myQuirk));
-        quirks.addQuirk(myQuirk);
-        assertEquals(quirks.hasQuirk(myQuirk), quirks.getList().contains(myQuirk));
+        QuirkList quirks1 = new QuirkList();
+
+        quirks1.addQuirk(quirk);
+
+        assertTrue(quirks1.hasQuirk(quirk));
+        assertFalse(quirks1.hasQuirk(quirk1));
+    }
+    //ClearAndAddQuirks
+    @Test
+    public void testClearAndAddQuirks() {
+        EventList events = new EventList();
+
+        Quirk quirk = new Quirk(events, "title", "type",
+                "reason", new Date(), new ArrayList<Day>(), 2, 10, "unittester");
+        Quirk quirk1 = new Quirk(events, "notin", "type",
+                "test", new Date(), new ArrayList<Day>(), 2, 10, "unittester");
+
+        QuirkList quirks1 = new QuirkList();
+
+        quirks1.addQuirk(quirk);
+        QuirkList quirks2 = new QuirkList();
+        quirks2.addQuirk(quirk1);
+        quirks1.clearAndAddQuirks(quirks2);
+
+        assertEquals(quirks2.getList(), quirks1.getList());
+
+
     }
 
     // Test to return the Quirk at location from QuirkList
     @Test
-    public void testGetQuirk() {
-        Quirk quirk = new Quirk (new EventList(), "title", "type", "reason",
-                new Date(), new ArrayList<Day>(), 1f, 2f);
+    public void testGetQuirk(){
         EventList events = new EventList();
-        Event event = new Event(quirk, "comment", null, new Date(), new Geolocation(1,1));
-        events.addEvent(event);
 
-        Quirk myQuirk = new Quirk(events, "title", "type", "reason", new Date(), new ArrayList<Day>(), 0f, 123f);
-        QuirkList quirks = new QuirkList();
+        Quirk quirk = new Quirk(events, "title", "type",
+                "reason", new Date(), new ArrayList<Day>(), 2, 10, "unittester");
+        QuirkList quirks1 = new QuirkList();
 
-        quirks.addQuirk(myQuirk);
-        assertEquals(quirks.getQuirk(0), myQuirk);
+        quirks1.addQuirk(quirk);
+
+        assertEquals(quirk, quirks1.getQuirk(0));
+
     }
 
-    // Test to remove Quirk from QuirkList
+    // Test removeQuirk
     @Test
-    public void testDeleteQuirk() {
-        Quirk quirk = new Quirk (new EventList(), "title", "type", "reason",
-                new Date(), new ArrayList<Day>(), 1f, 2f);
+
+    public void testRemoveQuirk(){
         EventList events = new EventList();
-        Event event = new Event(quirk, "comment", null, new Date(), new Geolocation(1,1));
-        events.addEvent(event);
 
-        Quirk myQuirk = new Quirk(events, "title", "type", "reason", new Date(), new ArrayList<Day>(), 0f, 123f);
-        QuirkList quirks = new QuirkList();
+        Quirk quirk = new Quirk(events, "title", "type",
+                "reason", new Date(), new ArrayList<Day>(), 2, 10, "unittester");
+        QuirkList quirks1 = new QuirkList();
 
-        quirks.addQuirk(myQuirk);
-        assertTrue(quirks.hasQuirk(myQuirk));
-        quirks.removeQuirk(myQuirk);
-        assertFalse(quirks.hasQuirk(myQuirk));
+        quirks1.addQuirk(quirk);
+        quirks1.removeQuirk(quirk);
+        assertFalse(quirks1.hasQuirk(quirk));
+
+    }
+
+    //Size of QuirkList
+
+    public void testSize(){
+        EventList events = new EventList();
+
+        Quirk quirk = new Quirk(events, "title", "type",
+                "reason", new Date(), new ArrayList<Day>(), 2, 10, "unittester");
+        QuirkList quirks1 = new QuirkList();
+
+        quirks1.addQuirk(quirk);
+        quirks1.removeQuirk(quirk);
+        assertEquals(0,quirks1.size());
+
     }
 
 }

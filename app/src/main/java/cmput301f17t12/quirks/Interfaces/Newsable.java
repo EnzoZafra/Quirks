@@ -4,7 +4,7 @@ import java.util.Date;
 
 public interface Newsable {
 
-    String buildNewsHeader(String extra);
+    String buildNewsHeader();
     String buildDate();
     String buildNewsDescription();
     Date getDate();

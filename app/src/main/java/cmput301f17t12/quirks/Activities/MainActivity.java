@@ -37,42 +37,50 @@ import cmput301f17t12.quirks.Models.User;
 import cmput301f17t12.quirks.R;
 
 public class MainActivity extends BaseActivity {
+    EventList filteredEvents = new EventList();
     private ArrayList<Newsable> newsitems = new ArrayList<>();
     private NewsItemAdapter adapter;
     private User currentlylogged;
     private Spinner spinner;
     private Button applyButton;
+    private Button mapButton;
     private EditText filterValue;
+    SharedPreferences settings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        settings = getSharedPreferences("dbSettings", Context.MODE_PRIVATE);
+
         // get the user
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
-        if (extras != null){
-            if (extras.containsKey("user")){
-                currentlylogged = (User) getIntent().getSerializableExtra("user");
-            }
-            else{
-                Log.i("Error", "Intent had extras but not user");
-            }
-        }
-        else{
+//        if (extras != null){
+//            if (extras.containsKey("user")){
+//                currentlylogged = (User) getIntent().getSerializableExtra("user");
+//            }
+//            else{
+//                Log.i("Error", "Intent had extras but not user");
+//            }
+//        }
+//        else{
+//
+//
+//            String jestID = settings.getString("jestID", "defaultvalue");
+//
+//            if (jestID.equals("defaultvalue")) {
+//                Log.i("Error", "Did not find correct jestID");
+//            }
+//
+//            currentlylogged = HelperFunctions.getUserObject(jestID);
+//        }
 
-            SharedPreferences settings = getSharedPreferences("dbSettings", Context.MODE_PRIVATE);
-            String jestID = settings.getString("jestID", "defaultvalue");
-
-            if (jestID.equals("defaultvalue")) {
-                Log.i("Error", "Did not find correct jestID");
-            }
-
-            currentlylogged = HelperFunctions.getUserObject(jestID);
-        }
+        currentlylogged = HelperFunctions.getSingleUserGeneral(getApplicationContext());
 
         spinner = (Spinner) findViewById(R.id.spinner);
         applyButton = (Button) findViewById(R.id.applyFilterButton);
+        mapButton = (Button) findViewById(R.id.mapButton);
         filterValue = (EditText) findViewById(R.id.filterValue);
 
         // Spinner Drop down elements
@@ -105,7 +113,6 @@ public class MainActivity extends BaseActivity {
                     Log.i("Error", "Failed to get query based on spinner selection");
                 }
                 else{
-//                    applyFilter(query);
                     offlineFilter(query, extraString, currentlylogged);
                 }
 
@@ -113,7 +120,13 @@ public class MainActivity extends BaseActivity {
 
         });
 
-        ArrayList<String> types = buildFeed(quirks);
+        for (int i = 0; i < quirks.size(); i++) {
+            ArrayList<Event> temp = quirks.get(i).getEventList().getList();
+            for (int j = 0; j < temp.size(); j++) {
+                newsitems.add(temp.get(j));
+                filteredEvents.addEvent(temp.get(j));
+            }
+        }
 
         Collections.sort(newsitems, new Comparator<Newsable>() {
             public int compare(Newsable m1, Newsable m2) {
@@ -122,11 +135,21 @@ public class MainActivity extends BaseActivity {
         });
 
         // instantiate custom adapter
-        adapter = new NewsItemAdapter(newsitems, this, types);
+        adapter = new NewsItemAdapter(newsitems, this);
 
         // handle listview and assign adapter
         ListView lView = (ListView) findViewById(R.id.newsfeed_listview);
         lView.setAdapter(adapter);
+
+        mapButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent mapIntent = new Intent(v.getContext(), MapActivity.class);
+                mapIntent.putExtra("FILTERED_LIST", filteredEvents);
+                startActivity(mapIntent);
+            }
+        });
     }
 
     @Override
@@ -138,19 +161,6 @@ public class MainActivity extends BaseActivity {
     int getNavigationMenuItemId() {
         return R.id.action_home;
     }
-
-    public ArrayList<String> buildFeed(ArrayList<Quirk> quirks) {
-        ArrayList<String> types = new ArrayList<String>();
-        for (int i = 0; i < quirks.size(); i++) {
-            ArrayList<Event> temp = quirks.get(i).getEventList().getList();
-            for (int j = 0; j < temp.size(); j++) {
-                newsitems.add(temp.get(j));
-                types.add(quirks.get(i).getType());
-            }
-        }
-        return types;
-    }
-
 
     public String getQueryFilterType(){
         String query = "type";
@@ -171,7 +181,7 @@ public class MainActivity extends BaseActivity {
 
     public void offlineFilter(String query, String arg, User user){
         QuirkList userQuirks = user.getQuirks();
-        EventList filteredEvents = new EventList();
+        filteredEvents.getList().clear();
         int size = user.getQuirks().size();
 
         if (arg.equals("")){ // no filter -> show all
@@ -189,7 +199,10 @@ public class MainActivity extends BaseActivity {
             for (int i = 0; i < size; i++){
                 Quirk curQuirk = userQuirks.getQuirk(i);
                 if (curQuirk.getType().equals(arg)){
-                    filteredEvents = curQuirk.getEventList();
+                    EventList templist = curQuirk.getEventList();
+                    for (int z = 0; z < templist.size(); z++) {
+                        filteredEvents.addEvent(templist.getEvent(z));
+                    }
                 }
             }
             applyOfflineTypeFilter(filteredEvents);
@@ -215,10 +228,6 @@ public class MainActivity extends BaseActivity {
         else{
             Log.i("Error", "offline filter failed if/else statements");
         }
-    }
-
-    public void showAll(){
-
     }
 
     public void applyOfflineTypeFilter(EventList events){

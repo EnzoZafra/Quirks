@@ -31,7 +31,8 @@
             android:focusable="false"
             android:textSize="16sp"
             android:layout_marginStart="5dp"
-            android:text="This is a test"/>
+            android:layout_marginBottom="7dp"
+            android:text="Upper"/>
 
         <ProgressBar
             android:id="@+id/quirkProgressBar"

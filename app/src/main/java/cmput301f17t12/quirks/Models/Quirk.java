@@ -24,7 +24,6 @@ public class Quirk implements Newsable, Serializable {
     @JestId
     private String qid;
 
-
     /**
      * Quirk constructor with required values only
      * @param title Title string of the Quirk
@@ -186,7 +185,7 @@ public class Quirk implements Newsable, Serializable {
      * @param startdate Quirk startDate
      */
     public void setDate(Date startdate){
-        this.startDate = startDate;
+        this.startDate = startdate;
     }
 
     /**
@@ -278,7 +277,7 @@ public class Quirk implements Newsable, Serializable {
      * @return News header string
      */
     @Override
-    public String buildNewsHeader(String extra) {
+    public String buildNewsHeader() {
         return getUser() + " added a new Quirk!";
     }
 
@@ -311,5 +310,13 @@ public class Quirk implements Newsable, Serializable {
     @Override
     public String toString() {
         return getTitle();
+    }
+
+    /**
+     * Return the string used for the following feed
+     * @return String header string
+     */
+    public String getFollowingString() {
+        return getUser() + " - " + getTitle();
     }
 }

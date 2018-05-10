@@ -13,15 +13,17 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import cmput301f17t12.quirks.Controllers.ElasticSearchUserController;
-import cmput301f17t12.quirks.Enumerations.Rarity;
-import cmput301f17t12.quirks.Models.Drop;
+import cmput301f17t12.quirks.Helpers.HelperFunctions;
 import cmput301f17t12.quirks.Models.Inventory;
 import cmput301f17t12.quirks.Models.QuirkList;
+import cmput301f17t12.quirks.Models.TradeRequest;
 import cmput301f17t12.quirks.Models.User;
+import cmput301f17t12.quirks.Models.UserRequest;
 import cmput301f17t12.quirks.R;
 
 public class LoginActivity extends AppCompatActivity {
@@ -31,6 +33,10 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText loginText;
     private Button loginButton;
+
+    SharedPreferences settings;
+    SharedPreferences.Editor editor;
+    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +53,9 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setTextColor(0xFF7B8C94);
         loginText.setTextColor(0xFF7B8C94);
 
-
+        settings = getSharedPreferences("dbSettings", Context.MODE_PRIVATE);
+        editor = settings.edit();
+        context = getApplicationContext();
 
 
         loginButton.setOnClickListener(new View.OnClickListener() {
@@ -70,51 +78,52 @@ public class LoginActivity extends AppCompatActivity {
 
                 try {
                     ArrayList<User> users = getUsersTask.get();
-
-                    System.out.println("size: " + users.size());
-                    if (username.length() == 0){
-                        emptyUsernameDialog();
+                    if(users != null){
+                        System.out.println("size: " + users.size());
+                        if (username.length() == 0){
+                            emptyUsernameDialog();
+                        }
+                        else if (users.size() == 1){
+                            System.out.println("\n\nvvv\nalready registered\n^^^\n\n");
+                            loginUser(users.get(0));
+                        }
+                        else if (users.size() > 1){
+                            Log.i("Error", "Username appears more than once in the database");
+                        }
+                        else{
+                            registerUser(username);
+                        }
                     }
-                    else if (users.size() == 1){
-                        System.out.println("\n\nvvv\nalready registered\n^^^\n\n");
-                        loginUser(users.get(0));
-                    }
-                    else if (users.size() > 1){
-                        Log.i("Error", "Username appears more than once in the database");
-                    }
-                    else{
-                        registerUser(username);
+                    else{ // offline behaviour: reject logins -> change to last user?
+                        String text = "Failed to login: no connection to database";
+                        int duration = Toast.LENGTH_LONG;
+                        Toast toast = Toast.makeText(context, text, duration);
+                        toast.show();
                     }
                 }
                 catch (Exception e) {
-                    Log.i("Error", "Failed to get the users from the async object");
-                    Log.i("Error", e.toString());
+                    Log.i("Error", "Failed to get the users from the async object\n" + e.toString() +"\n.");
                 }
             }
         });
-
     }
 
-    private void loginUser(User user){
+    private void loginUser(final User user){
         // after elasticsearch, go to main as that user
         System.out.println("Logging in as: " + user.getUsername());
         System.out.println("JestId: " + user.getId());
-        SharedPreferences settings = getSharedPreferences("dbSettings", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = settings.edit();
         editor.putString("jestID", user.getId());
+        editor.putInt("offlineChanges", 0);
         editor.commit();
-
+        new Thread(new Runnable() {
+            public void run() {
+                HelperFunctions.saveCurrentUser(getApplicationContext(), user);
+            }
+        }).start();
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         intent.putExtra("user", user);
         startActivity(intent);
     }
-
-
-//    //Need to check, is signing up new users in the spec??
-//    private void signUpUser(){
-//    }
-
-
 
     public void emptyUsernameDialog() {
 
@@ -130,123 +139,35 @@ public class LoginActivity extends AppCompatActivity {
         builder.show();
     }
 
-    //Need to check, is signing up new users in the spec??
     private void registerUser(String username){
         // create new user
-        User user = new User(username, new Inventory(), new ArrayList<User>(), new QuirkList());
+//        User user = new User(username, new Inventory(), new ArrayList<User>(),new ArrayList<UserRequest>(), new ArrayList<TradeRequest>(), new QuirkList());
+        User user = new User(username, new Inventory(), new ArrayList<String>(),new ArrayList<UserRequest>(), new ArrayList<TradeRequest>(), new QuirkList());
 
         ElasticSearchUserController.AddUsersTask addUsersTask
                 = new ElasticSearchUserController.AddUsersTask();
-        addUsersTask.execute(user);
-        System.out.println("Successfully added new user");
-        loginUser(user);
 
+        System.out.println("user id before execute: " + user.getId());
+
+        addUsersTask.execute(user);
+
+        try{
+            String jestID = addUsersTask.get();
+            if (jestID != null){
+                editor.putString("jestID", jestID);
+                System.out.println("user id after execute: " + user.getId());
+                System.out.println("Successfully added new user");
+                loginUser(user);
+            }
+            else{
+                String text = "Failed to register new user";
+                int duration = Toast.LENGTH_LONG;
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
+            }
+        }
+        catch (Exception e){
+            Log.i("Error", "Failed to register user from the async object\n" + e.toString() +"\n.");
+        }
     }
-//
-//    private void testDelete(User user){
-//        // delete
-//
-//
-//        ElasticSearchUserController.DeleteUserTask deleteUserTask
-//                = new ElasticSearchUserController.DeleteUserTask();
-//        deleteUserTask.execute(user);
-//
-//
-//        String query = "{" +
-//                "  \"query\": {" +
-//                "    \"match\": {" +
-//                "      \"username\": \"" + user.getUsername() + "\"" +
-//                "    }" +
-//                "  }" +
-//                "}";
-//
-//
-//        ElasticSearchUserController.GetUsersTask getUsersTask
-//                = new ElasticSearchUserController.GetUsersTask();
-//        getUsersTask.execute(query);
-//
-//
-//        try {
-//
-//            ArrayList<User> users = getUsersTask.get();
-//
-//            System.out.println("size: " + users.size());
-//            if (users.size() == 1){
-//                System.out.println("\n\nvvv\nstill exists\n^^^\n\n");
-//            }
-//            else if (users.size() > 1){
-//                Log.i("Error", "Username appears more than once in the database");
-//            }
-//            else{
-//                System.out.println("Delete worked");
-//            }
-//        }
-//        catch (Exception e) {
-//            Log.i("Error", "user successfully deleted");
-//            Log.i("Error", e.toString());
-////                    String text = "Failed to get the tweets from the async object";
-////                    Toast toast = Toast.makeText(context, text, duration);
-////                    toast.show();
-//        }
-//
-//
-//
-//    }
-//    private void testUpdate1(User user1){
-//        System.out.println("Testing update user");
-//
-//        String query2 = "AV-uhlzji8-My2t7XPu9";
-//        query2 = user1.getId();
-//        ElasticSearchUserController.GetSingleUserTask getSingleUserTask
-//                = new ElasticSearchUserController.GetSingleUserTask();
-//        getSingleUserTask.execute(query2);
-//        User user;
-//        try{
-//            user = getSingleUserTask.get();
-//
-//            System.out.println("got single: " + user.getUsername() + "\ninventory:");
-//            user.getInventory().printItems();
-//            testUpdate2(user);
-//        }
-//        catch(Exception e){
-//            Log.i("Error", "Failed to get the user by id");
-//            Log.i("Error", e.toString());
-//        }
-//
-//
-//
-//    }
-//    private void testUpdate2(User user){
-//        // update
-//        user.getInventory().addDrop(new Drop(Rarity.UNCOMMON, "frog"));
-////        while(user.getInventory().hasDrop(new Drop(Rarity.UNCOMMON, "frog"))){
-////            user.getInventory().removeDrop(new Drop(Rarity.UNCOMMON, "frog"));
-////        }
-//
-////        user.getUsername();
-//        ElasticSearchUserController.UpdateUserTask updateUserTask
-//                = new ElasticSearchUserController.UpdateUserTask();
-//        updateUserTask.execute(user);
-//
-//        // get them again
-//
-//        String query2 = "AV-uhlzji8-My2t7XPu9";
-//        query2 = user.getId();
-//        ElasticSearchUserController.GetSingleUserTask getSingleUserTask
-//                = new ElasticSearchUserController.GetSingleUserTask();
-//        getSingleUserTask.execute(query2);
-//
-////
-//        try{
-//            user = getSingleUserTask.get();
-//
-//            System.out.println("got single after update: " + user.getUsername() + "\ninventory:");
-//            user.getInventory().printItems();
-//////            testUpdate2(user);
-//        }
-//        catch(Exception e){
-//            Log.i("Error", "Failed to get the user by id");
-//            Log.i("Error", e.toString());
-//        }
-//    }
 }

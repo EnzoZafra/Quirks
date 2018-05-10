@@ -13,16 +13,17 @@ public class GeolocationTest {
     public void testSetLatitude() {
         Geolocation geoLoc = new Geolocation(123.321,1234.4321);
         geoLoc.setLatitude(2234.23);
-        Geolocation geoLoc1 = new Geolocation(2234.23,1234.4321);
-        assertEquals(geoLoc, geoLoc1);
+        double actual = 2234.23;
+        assertEquals(geoLoc.getLatitude(), actual,0);
     }
 
     // Test get longitude (lat,lon)
     @Test
-    public void testGetLongitude() {
+    public void testSetLongitude() {
         Geolocation geoLoc = new Geolocation(123.321,1234.4321);
-        double lat = geoLoc.getLongitude();
-        assertEquals(lat, 1234.4321);
+        geoLoc.setLongitude(123.123);
+        double actual = 123.123;
+        assertEquals(geoLoc.getLongitude(), actual,0);
     }
 }
 

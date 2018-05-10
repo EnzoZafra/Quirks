@@ -15,6 +15,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,17 +33,24 @@ import java.util.Date;
 import cmput301f17t12.quirks.Controllers.ElasticSearchUserController;
 import cmput301f17t12.quirks.Helpers.HelperFunctions;
 import cmput301f17t12.quirks.Models.Event;
+import cmput301f17t12.quirks.Models.Geolocation;
 import cmput301f17t12.quirks.Models.Quirk;
 import cmput301f17t12.quirks.Models.User;
 import cmput301f17t12.quirks.R;
 
-public class EditEventActivity extends AppCompatActivity {
+import static cmput301f17t12.quirks.R.id.event_map;
+
+public class EditEventActivity extends AppCompatActivity implements OnMapReadyCallback, OnMapClickListener {
 
     private static final int SELECTED_PICTURE = 0;
     private User currentlylogged;
     Bitmap bitmap;
     private Event referenced_event;
     private Quirk referenced_quirk;
+
+    private GoogleMap eventMap;
+    private TextView editEventMapTextView;
+    private Geolocation userLoc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +64,7 @@ public class EditEventActivity extends AppCompatActivity {
             Log.i("Error", "Did not find correct jestID");
         }
 
-        currentlylogged = HelperFunctions.getUserObject(jestID);
+        currentlylogged = HelperFunctions.getSingleUserGeneral(getApplicationContext());
 
         final EditText commentEdit = (EditText) findViewById(R.id.comment_edittext);
 
@@ -75,6 +91,16 @@ public class EditEventActivity extends AppCompatActivity {
         }
 
         commentEdit.setText(referenced_event.getComment());
+        Geolocation eventGeo = referenced_event.getGeolocation();
+        if (eventGeo != null) {
+            userLoc = new Geolocation(referenced_event.getGeolocation().getLatitude(),referenced_event.getGeolocation().getLongitude());
+        }
+
+        editEventMapTextView = (TextView) findViewById(R.id.event_tap_text);
+
+        SupportMapFragment mapFragment =
+                (SupportMapFragment) getSupportFragmentManager().findFragmentById(event_map);
+        mapFragment.getMapAsync(this);
     }
 
     public void pickPhoto(View view) {
@@ -105,10 +131,12 @@ public class EditEventActivity extends AppCompatActivity {
 
         referenced_event.setPhotoByte(photoByte);
         referenced_event.setDate(new Date());
+        referenced_event.setGeolocation(userLoc);
 
-        ElasticSearchUserController.UpdateUserTask updateUserTask
-                = new ElasticSearchUserController.UpdateUserTask();
-        updateUserTask.execute(currentlylogged);
+//        ElasticSearchUserController.UpdateUserTask updateUserTask
+//                = new ElasticSearchUserController.UpdateUserTask();
+//        updateUserTask.execute(currentlylogged);
+        HelperFunctions.updateSingleUser(getApplicationContext(), currentlylogged);
 
         startActivity(new Intent(this, MainActivity.class));
     }
@@ -121,9 +149,10 @@ public class EditEventActivity extends AppCompatActivity {
         referenced_quirk.removeEvent(referenced_event);
         referenced_quirk.decCurrValue();
 
-        ElasticSearchUserController.UpdateUserTask updateUserTask
-                = new ElasticSearchUserController.UpdateUserTask();
-        updateUserTask.execute(currentlylogged);
+//        ElasticSearchUserController.UpdateUserTask updateUserTask
+//                = new ElasticSearchUserController.UpdateUserTask();
+//        updateUserTask.execute(currentlylogged);
+        HelperFunctions.updateSingleUser(getApplicationContext(), currentlylogged);
         startActivity(new Intent(this, MainActivity.class));
     }
 
@@ -166,4 +195,39 @@ public class EditEventActivity extends AppCompatActivity {
         bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
         return stream.toByteArray();
     }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        eventMap = googleMap;
+
+        eventMap.setOnMapClickListener(this);
+
+        LatLng cameraLatLng = new LatLng(53.5232, -113.5263);
+
+        if(userLoc != null) {
+            LatLng userLatLon = new LatLng(userLoc.getLatitude(), userLoc.getLongitude());
+            cameraLatLng = new LatLng(userLoc.getLatitude(), userLoc.getLongitude());
+            googleMap.addMarker(new MarkerOptions().position(userLatLon)
+                    .title(referenced_event.getComment()));
+        }
+
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(cameraLatLng));
+    }
+
+    @Override
+    public void onMapClick(LatLng point) {
+        editEventMapTextView.setText("tapped, point=" + point);
+
+        eventMap.clear();
+        eventMap.addMarker(new MarkerOptions().position(point));
+
+        if(userLoc == null){
+            userLoc = new Geolocation(point.latitude, point.longitude);
+        }
+        else {
+            userLoc.setLatitude(point.latitude);
+            userLoc.setLongitude(point.longitude);
+        }
+    }
+
 }

@@ -16,12 +16,10 @@ import cmput301f17t12.quirks.R;
 
 public class NewsItemAdapter extends BaseAdapter implements ListAdapter {
 
-    private ArrayList<String> types = new ArrayList<>();
     private ArrayList<Newsable> list = new ArrayList<>();
     private Context context;
 
-    public NewsItemAdapter(ArrayList<Newsable> list, Context context, ArrayList<String> types) {
-        this.types = types;
+    public NewsItemAdapter(ArrayList<Newsable> list, Context context) {
         this.list = list;
         this.context = context;
     }
@@ -69,7 +67,7 @@ public class NewsItemAdapter extends BaseAdapter implements ListAdapter {
 
         //Handle TextView and display news header
         TextView listItemHeader = (TextView) view.findViewById(R.id.headerTxt);
-        listItemHeader.setText(item.buildNewsHeader(types.get(pos)));
+        listItemHeader.setText(item.buildNewsHeader());
 
         //Handle TextView and display news description
         TextView listItemDescription = (TextView) view.findViewById(R.id.captionTxt);

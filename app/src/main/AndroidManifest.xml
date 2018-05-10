@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="cmput301f17t12.quirks">
+
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -10,7 +12,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activities.LoginActivity">
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
+        <activity android:name=".Activities.LoginActivity"
+            android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -19,12 +29,21 @@
         </activity>
         <activity android:name=".Activities.EventsActivity" />
         <activity android:name=".Activities.QuirksActivity" />
-        <activity android:name=".Activities.MainActivity" />
+        <activity android:name=".Activities.MainActivity"
+            android:windowSoftInputMode="stateHidden"/>
         <activity android:name=".Activities.EditQuirkActivity" />
         <activity android:name=".Activities.AddQuirkActivity" />
         <activity android:name=".Activities.NewEventActivity" />
         <activity android:name=".Activities.EditEventActivity" />
-        <activity android:name=".Activities.EventListActivity"></activity>
+        <activity android:name=".Activities.MapActivity" />
+        <activity android:name=".Activities.SocialActivity" />
+        <activity android:name=".Activities.FriendActivity" />
+        <activity android:name=".Activities.RequestActivity" />
+        <activity android:name=".Activities.FeedActivity"/>
+        <activity android:name=".Activities.FindFriendActivity"
+            android:windowSoftInputMode="stateHidden"/>
+        <activity android:name=".Activities.EventListActivity" />
+        <activity android:name=".Activities.TradeActivity"></activity>
     </application>
 
 </manifest>

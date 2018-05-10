@@ -4,13 +4,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Inventory implements Serializable {
-    private ArrayList<Drop> inventory = new ArrayList<Drop>();
+    private ArrayList<Drop> inventory;
 
     /**
      * Constructor for Inventory Object
      */
-    public Inventory(){
-
+    public Inventory() {
+        inventory = new ArrayList<>();
     }
 
     /**
@@ -19,13 +19,6 @@ public class Inventory implements Serializable {
      */
     public void addDrop(Drop drop){
         inventory.add(drop);
-        //if (!hasDrop(drop)){
-        //  inventory.add(drop);
-        //}
-        //else{
-        //  System.out.println("already in inventory");
-        //}
-
     }
 
     /**
@@ -37,7 +30,7 @@ public class Inventory implements Serializable {
 
         for (int i = 0; i<inventory.size(); i++){
             Drop d = inventory.get(i);
-            if (d.getName().equals(drop.getName()) && d.getRarity()==drop.getRarity()){
+            if (d.equals(drop)){
                 return true;
             }
         }
@@ -54,11 +47,16 @@ public class Inventory implements Serializable {
     }
 
     /**
-     * Remmove drop from Inventory
+     * Remove drop from Inventory
      * @param drop Drop to remove
      */
-    public void removeDrop(Drop drop){
-        inventory.remove(drop);
+    public void removeDrop(Drop drop) {
+        for (Drop item : inventory) {
+            if (item.equals(drop)) {
+                inventory.remove(item);
+                break;
+            }
+        }
     }
 
     /**
@@ -68,17 +66,4 @@ public class Inventory implements Serializable {
     public ArrayList<Drop> getList(){
         return inventory;
     }
-
-    /**
-     * Print contents of Inventory. Used for testing
-     */
-    public void printItems(){
-        for (int i = 0; i<inventory.size(); i++){
-            System.out.println(" >"+inventory.get(i).getName());
-        }
-    }
-
-
-
-
 }

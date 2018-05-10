@@ -162,7 +162,7 @@ public class ElasticSearchEventController {
                 Log.i("Error", "Something went wrong when we tried to communicate with the elasticsearch server!");
                 Log.i("Error", e.toString());
             }
-            return new Event("fakeuser", "comment", new Date());
+            return new Event("fakeuser", "comment", new Date(), "Test");
         }
     }
 

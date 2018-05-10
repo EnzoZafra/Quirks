@@ -14,6 +14,7 @@ import io.searchbox.annotations.JestId;
 public class Event implements Mappable, Newsable, Serializable {
 
     private String user;
+    private String type;
     private String comment;
     private byte[] photoByte;
     private Date date;
@@ -28,8 +29,9 @@ public class Event implements Mappable, Newsable, Serializable {
      * @param comment Comment string
      * @param date Event date
      */
-    public Event(String user, String comment, Date date){
+    public Event(String user, String comment, Date date, String type){
         this.user = user;
+        this.type = type;
         this.comment = comment;
         this.date = date;
     }
@@ -41,8 +43,9 @@ public class Event implements Mappable, Newsable, Serializable {
      * @param photoByte Bytecode of the photo
      * @param date  Event date
      */
-    public Event(String user, String comment, byte[] photoByte, Date date) {
+    public Event(String user, String comment, byte[] photoByte, Date date, String type) {
         this.user = user;
+        this.type = type;
         this.comment = comment;
         if (comment == null) {
             this.comment = "";
@@ -62,8 +65,9 @@ public class Event implements Mappable, Newsable, Serializable {
      * @param date  Event date
      * @param geolocation Location of the event
      */
-    public Event(String user, String comment, byte[] photoByte, Date date, Geolocation geolocation) {
+    public Event(String user, String comment, byte[] photoByte, Date date, Geolocation geolocation, String type) {
         this.user = user;
+        this.type = type;
         this.comment = comment;
         this.photoByte = photoByte;
         this.date = date;
@@ -151,6 +155,18 @@ public class Event implements Mappable, Newsable, Serializable {
     }
 
     /**
+     * Get the Event's quirk type
+     * @return Event type
+     */
+    public String getType() { return type; }
+
+    /**
+     * Set the Event's quirk type
+     * @param type
+     */
+    public void setType(String type) { this.type = type; }
+
+    /**
      * Get the Event Geolocation
      * @return Event Location
      */
@@ -189,8 +205,8 @@ public class Event implements Mappable, Newsable, Serializable {
      * @return News header string
      */
     @Override
-    public String buildNewsHeader(String extra) {
-        return getUser() + " logged to " + extra + "!";
+    public String buildNewsHeader() {
+        return getUser() + " logged to " + getType() + "!";
     }
 
     /**
@@ -207,12 +223,13 @@ public class Event implements Mappable, Newsable, Serializable {
         return relativeTimeSpan.toString();
     }
 
+
     /**
      * Build the description for the event
      * @return Description string
      */
     @Override
     public String buildNewsDescription() {
-        return '"' + getComment() + '"';
+        return getComment();
     }
 }

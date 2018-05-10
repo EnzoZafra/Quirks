@@ -12,4 +12,11 @@
     <color name="backgrounddark">#A9A9A9</color>
     <color name="backgroundaccent">#2F4F4F</color>
 
+    <color name="commondrop">#B0C3D9</color>
+    <color name="uncommondrop">#5E98D9</color>
+    <color name="raredrop">#4B69FF</color>
+    <color name="mythicaldrop">#8847FF</color>
+    <color name="legendarydrop">#D32CE6</color>
+    <color name="ancientdrop">#E4AE33</color>
+
 </resources>

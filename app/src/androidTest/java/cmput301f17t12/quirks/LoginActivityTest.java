@@ -38,7 +38,7 @@ public class LoginActivityTest {
     @Before
     public void initUsername() {
         // Specify a valid string.
-        username = "testing123  ";
+        username = "intest2";
         loginActivity = mActivityRule.getActivity();
     }
 

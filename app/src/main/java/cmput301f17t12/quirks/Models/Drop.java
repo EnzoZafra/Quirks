@@ -2,61 +2,53 @@ package cmput301f17t12.quirks.Models;
 
 import java.io.Serializable;
 
-import cmput301f17t12.quirks.Enumerations.Rarity;
+import cmput301f17t12.quirks.Enumerations.DropType;
 
-//public class Drop implements Tradable {
 public class Drop implements Serializable {
 
-    private Rarity rarity;
-    private String name;
+    private DropType dropType;
+    private boolean isSelected;
 
     /**
      * Constructor for the drop object
-     * @param rarity Rarity enumeration of the object's rarity
-     * @param name Drop name string
+     * @param dropType DropType enumeration of the object's dropType
      */
-    public Drop(Rarity rarity, String name){
-        this.rarity = rarity;
-        this.name = name;
-    }
-
-    public String getDropDetails(){
-        return "";
+    public Drop(DropType dropType){
+        this.dropType = dropType;
+        this.isSelected = false;
     }
 
     /**
-     * Get drop rarity level
-     * @return Rarity enum of the drop
+     * Get drop dropType level
+     * @return DropType enum of the drop
      */
-    public Rarity getRarity(){
-        return rarity;
+    public DropType getDropType(){
+        return dropType;
     }
 
     /**
-     * Set drop rarity level
-     * @param rarity Rarity enum of the drop
+     * Toggle the isSelected value of the Drop
+     * @param val boolean value
      */
-    public void setRarity(Rarity rarity){
-        this.rarity = rarity;
+    public void setSelected(boolean val) {
+        this.isSelected = val;
     }
 
     /**
-     * Get drop name
-     * @return Drop name
+     * Returns isSelected
+     * @return
      */
-    public String getName(){
-        return name;
+    public boolean isSelected() {
+        return this.isSelected;
     }
 
-    /**
-     * Set drop name
-     * @param name Drop name
-     */
-    public void setName(String name){
-        this.name = name;
-    }
+    @Override
+    public boolean equals(Object other) {
+        if (other == null) return false;
+        if (other == this) return true;
+        if (!(other instanceof Drop))return false;
+        Drop otherDrop = (Drop)other;
 
-    //public boolean trade(User user, Drop drop){
-    //      return false;
-    //}
+        return (this.dropType == otherDrop.dropType && this.isSelected == otherDrop.isSelected);
+    }
 }

@@ -56,7 +56,8 @@ public class EventListActivity extends AppCompatActivity {
 
         // Use the quirk's pos to get the Eventlist
         pos = (Integer) getIntent().getSerializableExtra("quirkPos");
-        User currentlylogged = HelperFunctions.getUserObject(jestID);
+//        User currentlylogged = HelperFunctions.getUserObject(jestID);
+        User currentlylogged = HelperFunctions.getSingleUserGeneral(getApplicationContext());
         quirk = currentlylogged.getQuirks().getQuirk(pos);
         eventList = quirk.getEventList();
 
@@ -76,7 +77,8 @@ public class EventListActivity extends AppCompatActivity {
 
     // Grabs the latest events from the db
     public void updateEventList(String jestID){
-        User currentlylogged = HelperFunctions.getUserObject(jestID);
+//        User currentlylogged = HelperFunctions.getUserObject(jestID);
+        User currentlylogged = HelperFunctions.getSingleUserGeneral(getApplicationContext());
         quirk = currentlylogged.getQuirks().getQuirk(pos);
         EventList tempEventList = currentlylogged.getQuirks().getQuirk(pos).getEventList();
         eventList.clearAndAddEvents(tempEventList);

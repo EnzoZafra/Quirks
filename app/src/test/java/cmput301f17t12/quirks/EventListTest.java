@@ -19,9 +19,10 @@ public class EventListTest {
     // Test getEventList
     @Test
     public void testGetList() {
-        Quirk quirk = new Quirk (new EventList(), "title", "type", "reason",
-                new Date(), new ArrayList<Day>(), 1, 2);
-        Event event = new Event(quirk, "comment", null, new Date(), new Geolocation(1,1));
+        Quirk quirk = new Quirk ("title", "type",
+                new Date(), new ArrayList<Day>(), 2, "unittester", "reason" );
+        Event event = new Event(quirk.getUser(), "comment", null, new Date(), new Geolocation(1,1), "Test");
+
 
         EventList events1 = new EventList();
 
@@ -36,9 +37,9 @@ public class EventListTest {
     // Test adding Event to EventList
     @Test
     public void testAddEvent() {
-        Quirk quirk = new Quirk (new EventList(), "title", "type", "reason",
-                new Date(), new ArrayList<Day>(), 1, 2);
-        Event event = new Event(quirk, "comment", null, new Date(), new Geolocation(1,1));
+        Quirk quirk = new Quirk ("title", "type",
+                new Date(), new ArrayList<Day>(), 2, "unittester", "reason" );
+        Event event = new Event(quirk.getUser(), "comment", null, new Date(), new Geolocation(1,1), "Test");
 
         EventList events = new EventList();
 
@@ -51,9 +52,9 @@ public class EventListTest {
     // Test EventList has Event
     @Test
     public void testHasEvent() {
-        Quirk quirk = new Quirk (new EventList(), "title", "type", "reason",
-                new Date(), new ArrayList<Day>(), 1, 2);
-        Event event = new Event(quirk, "comment", null, new Date(), new Geolocation(1,1));
+        Quirk quirk = new Quirk ("title", "type",
+                new Date(), new ArrayList<Day>(), 2, "unittester", "reason" );
+        Event event = new Event(quirk.getUser(), "comment", null, new Date(), new Geolocation(1,1), "Test");
 
         EventList events = new EventList();
 
@@ -61,13 +62,29 @@ public class EventListTest {
         events.addEvent(event);
         assertEquals(events.hasEvent(event), events.getList().contains(event));
     }
+    //Test clearAndAddEvents
+    @Test
+    public void testClearAndAddEvents(){
+        Quirk quirk = new Quirk ("title", "type",
+                new Date(), new ArrayList<Day>(), 2, "unittester", "reason" );
+        Event event = new Event(quirk.getUser(), "comment", null, new Date(), new Geolocation(1,1), "Test");
+        EventList events = new EventList();
+        Event event2 = new Event(quirk.getUser(), "comment2", null, new Date(), new Geolocation(1,1), "Test2");
+        events.addEvent(event2);
+        EventList events2 = new EventList();
+        events2.addEvent(event);
+        events.clearAndAddEvents(events2);
+        assertEquals(events.getList(), events2.getList());
 
+
+
+    }
     // Test getting Event from EventList
     @Test
     public void testGetEvent() {
-        Quirk quirk = new Quirk (new EventList(), "title", "type", "reason",
-                new Date(), new ArrayList<Day>(), 1, 2);
-        Event event = new Event(quirk, "comment", null, new Date(), new Geolocation(1,1));
+        Quirk quirk = new Quirk ("title", "type",
+                new Date(), new ArrayList<Day>(), 2, "unittester", "reason" );
+        Event event = new Event(quirk.getUser(), "comment", null, new Date(), new Geolocation(1,1), "Test");
 
         EventList events = new EventList();
 
@@ -75,13 +92,26 @@ public class EventListTest {
 
         assertEquals(events.getEvent(0), event);
     }
+    //Test get size
+    @Test
+    public void testSize(){
+        Quirk quirk = new Quirk ("title", "type",
+                new Date(), new ArrayList<Day>(), 2, "unittester", "reason" );
+        Event event = new Event(quirk.getUser(), "comment", null, new Date(), new Geolocation(1,1), "Test");
 
+        EventList events = new EventList();
+
+        events.addEvent(event);
+        Integer actual = 1;
+        assertEquals(events.size(), actual);
+
+    }
     // Test to deleting Event from Eventlist
     @Test
-    public void testDeleteEvent() {
-        Quirk quirk = new Quirk (new EventList(), "title", "type", "reason",
-                new Date(), new ArrayList<Day>(), 1, 2);
-        Event event = new Event(quirk, "comment", null, new Date(), new Geolocation(1,1));
+    public void testRemoveEvent() {
+        Quirk quirk = new Quirk ("title", "type",
+                new Date(), new ArrayList<Day>(), 2, "unittester", "reason" );
+        Event event = new Event(quirk.getUser(), "comment", null, new Date(), new Geolocation(1,1), "Test");
 
         EventList events = new EventList();
 
@@ -91,6 +121,21 @@ public class EventListTest {
         assertFalse(events.hasEvent(event));
     }
 
+
+    //Test toString
+    @Test
+    public void testToString(){
+        Quirk quirk = new Quirk ("title", "type",
+                new Date(), new ArrayList<Day>(), 2, "unittester", "reason" );
+        Event event = new Event(quirk.getUser(), "comment", null, new Date(), new Geolocation(1,1), "Test");
+
+        EventList events = new EventList();
+
+        events.addEvent(event);
+
+        String actual = "0: comment ";
+        assertEquals(events.toString(),actual);
+    }
 }
 
 

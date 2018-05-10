@@ -2,6 +2,7 @@
     <string name="app_name">Quirks</string>
     <string name="geomap_desc">Map</string>
     <string name="social_image_desc">Social</string>
+    <string name="card_image_desc">Cards</string>
     <string name="event_image_desc">New Event</string>
     <string name="quirklist_image_desc">Quirks</string>
     <string name="home_image_desc">Home</string>
@@ -15,4 +16,9 @@
     <string name="cancel">Cancel</string>
     <string name="delete">Delete</string>
     <string name="errormsg_newevent">You have no Quirks to log an event to.</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_maps2">Map</string>
+    <string name="searchlab">Search</string>
+    <string name="search_hint">searchme</string>
+    <string name="mostrecent">Most recent event:</string>
 </resources>

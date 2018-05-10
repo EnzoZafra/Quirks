@@ -19,24 +19,16 @@ public class QuirkList implements Serializable {
         quirks.add(quirk);
     }
 
+    public void addAllQuirks(QuirkList quirkList) {quirks.addAll(quirkList.getList()); }
     /**
      * Copy contents of inputted QuirkList. Called clearAndAdd because it clears the original
      * QuirkList and then adds all Quirks from the QuirkList that the class is copying from
      * @param newQuirks QuirkList that the class is copying
      */
     public void clearAndAddQuirks(QuirkList newQuirks){
-        System.out.println("the passed size inside clearAndAdd: " + newQuirks.size());
-        System.out.println("the quirks to add inside clearAndAdd before clear:");
-        for (int i = 0; i < newQuirks.size(); i++){
-            System.out.println("\t" + newQuirks.getQuirk(i).getType());
-        }
         this.quirks.clear();
-        System.out.println("the quirks to add inside clearAndAdd after clear:");
-        for (int i = 0; i < newQuirks.size(); i++){
-            System.out.println("\t" + newQuirks.getQuirk(i).getType());
-        }
+
         for(int i = 0; i<newQuirks.size(); i++){
-            System.out.println("\t\t> clearAndAdd adding: " + newQuirks.getQuirk(i).getType());
             this.quirks.add(newQuirks.getQuirk(i));
         }
     }

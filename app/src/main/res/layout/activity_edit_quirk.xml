@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,9 +7,6 @@
     android:background="@color/background"
     tools:context="cmput301f17t12.quirks.Activities.EditQuirkActivity">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -140,12 +137,11 @@
             android:id="@+id/textViewGoal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/QuirkeditTextTitle"
-            android:layout_below="@+id/QuirkeditTextTitle"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="12dp"
+            android:layout_marginTop="94dp"
             android:textSize="17sp"
-            android:text="Goal" />
+            android:text="Goal"
+            android:layout_below="@+id/QuirkeditTextTitle"
+            android:layout_alignStart="@+id/QuirkeditTextTitle" />
 
         <EditText
             android:id="@+id/QuirkeditTextTitle"
@@ -203,5 +199,25 @@
             android:layout_marginEnd="12dp"
             android:textSize="17sp"
             android:inputType="number" />
+
+        <TextView
+            android:id="@+id/textViewStartingDateEdit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Starting Date"
+            android:layout_below="@+id/QuirkeditTextTitle"
+            android:layout_alignStart="@+id/QuirkeditTextTitle"
+            android:layout_marginTop="15dp" />
+
+        <TextView
+            android:id="@+id/textViewSelectStartingDateEdit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/QuirkeditTextTitle"
+            android:layout_alignStart="@+id/textViewStartingDateEdit"
+            android:layout_below="@+id/textViewStartingDateEdit"
+            android:layout_marginTop="13dp"
+            android:textSize="17sp"
+            android:background="@color/backgroundlight"
+            />
     </RelativeLayout>
-</android.support.constraint.ConstraintLayout>

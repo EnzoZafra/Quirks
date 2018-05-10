@@ -9,7 +9,7 @@ public class EventList implements Serializable {
     /**
      * EventList Constructor
      */
-    public EventList(){
+    public EventList() {
         // Might be better to initialize eventList in here
     }
 
@@ -21,6 +21,7 @@ public class EventList implements Serializable {
         events.add(event);
     }
 
+    public void addAllEvents(EventList addEvents) { events.addAll(addEvents.getList()); }
     /**
      * Check if an event is within the EventList
      * @param event Event we want to find
